@@ -1,0 +1,18 @@
+# Postgres ในเครื่องสำหรับพัฒนา (บน production ใช้ Supabase แทน)
+# docker compose up -d  แล้วโหลดตาราง:
+#   docker compose exec -T db psql -U postgres -d shelfswap < schema.sql
+#   docker compose exec -T db psql -U postgres -d shelfswap < seed.sql
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: shelfswap
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data   # ไม่มีบรรทัดนี้ ลบ container แล้วข้อมูลหายหมด
+
+volumes:
+  pgdata:
