@@ -80,6 +80,7 @@ func main() {
 	mux.HandleFunc("DELETE /api/listings/{id}", login(h.DeleteListing))
 	mux.HandleFunc("POST /api/listings/{id}/sold", login(h.MarkSold))
 	mux.HandleFunc("GET /api/me/listings", login(h.MyListings))
+	mux.HandleFunc("POST /api/uploads", login(h.UploadImage))
 
 	// ---------- คนที่ 2: การจอง ----------
 	mux.HandleFunc("POST /api/listings/{id}/reserve", login(h.Reserve))
