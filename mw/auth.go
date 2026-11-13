@@ -1,4 +1,3 @@
-// Package mw คือด่านที่คำขอต้องผ่านก่อนถึง handler
 package mw
 
 import (
@@ -28,8 +27,6 @@ func WhoFrom(ctx context.Context) (Who, bool) {
 	return w, ok
 }
 
-// UserStatus คือสิ่งที่ด่านต้องถามฐานข้อมูลทุกครั้ง (store.Store ทำให้แล้ว)
-// แยกเป็น interface เพื่อให้เทสต์ส่งของปลอมเข้ามาแทนได้
 type UserStatus interface {
 	AuthStatus(ctx context.Context, id int64) (role string, banned bool, err error)
 }
@@ -47,10 +44,6 @@ func bearer(r *http.Request) (string, bool) {
 }
 
 // RequireLogin ตรวจตั๋ว แล้วถามฐานข้อมูลซ้ำว่าคนนี้ยังอยู่ ไม่ถูกแบน และตอนนี้มี role อะไร
-//
-// ทำไมต้องถาม DB ทุกครั้ง: JWT ที่ออกไปแล้วใช้ได้จนหมดอายุ ถ้าเชื่อ role/สถานะบนตั๋วอย่างเดียว
-// admin แบนใครไป คนนั้นก็ยังใช้ตั๋วเดิมได้อีกเป็นชั่วโมง (ปัญหาเดียวกับ role ค้างใน Lab 12)
-// ราคาที่จ่ายคือ query เล็ก ๆ 1 ครั้งต่อคำขอ (ใช้ primary key จึงเร็วมาก)
 func RequireLogin(iss *auth.Issuer, users UserStatus, next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		tok, ok := bearer(r)
@@ -81,8 +74,6 @@ func RequireLogin(iss *auth.Issuer, users UserStatus, next http.HandlerFunc) htt
 	}
 }
 
-// MaybeLogin ใช้กับหน้าที่ Guest เข้าได้ แต่ถ้า login อยู่จะเห็นมากขึ้น (เช่น เจ้าของเห็นประกาศที่รออนุมัติ)
-// ตั๋วเสียหรือถูกแบน = ถือเป็น Guest ไม่ตอบ error
 func MaybeLogin(iss *auth.Issuer, users UserStatus, next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if tok, ok := bearer(r); ok {

@@ -1,4 +1,3 @@
-// Package auth ดูแลเรื่องรหัสผ่าน (bcrypt) และตั๋ว (JWT) ไม่รู้จัก HTTP หรือฐานข้อมูลเลย
 package auth
 
 import "golang.org/x/crypto/bcrypt"

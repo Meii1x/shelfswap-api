@@ -137,9 +137,6 @@ func (s *Store) GetListing(ctx context.Context, id int64) (Listing, error) {
 	return scanListing(s.Pool.QueryRow(ctx, listingSelect+listingFrom+` WHERE l.id = $1`, id))
 }
 
-// ============================================================================
-// ฝั่งเขียน (คนที่ 2): ผู้ขายจัดการประกาศของตัวเอง
-// ============================================================================
 
 type ListingInput struct {
 	Title       string `json:"title"`

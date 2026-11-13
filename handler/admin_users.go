@@ -10,8 +10,6 @@ import (
 	"shelfswap/store"
 )
 
-// ไฟล์ของคนที่ 1: หมวดหมู่ + ผู้ใช้ ทุก route ในไฟล์นี้ถูกครอบด้วย admin(...) ใน main.go
-
 // AdminUsers GET /api/admin/users?q=
 func (h *Handler) AdminUsers(w http.ResponseWriter, r *http.Request) {
 	items, err := h.Store.ListUsers(r.Context(), strings.TrimSpace(r.URL.Query().Get("q")))

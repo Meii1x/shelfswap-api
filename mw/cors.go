@@ -5,9 +5,6 @@ import (
 	"strings"
 )
 
-// CORS อนุญาตเฉพาะ origin ที่อยู่ในรายชื่อ (ALLOWED_ORIGINS คั่นด้วย ,)
-// ต่างจาก moviehub: เพิ่ม PATCH เพราะ ShelfSwap ใช้ PATCH ตอบรับการจอง/อนุมัติประกาศ
-// ถ้าลืม เบราว์เซอร์จะตอบ "Failed to fetch" ทั้งที่ curl ยิงผ่าน
 func CORS(allowed []string, next http.Handler) http.Handler {
 	ok := map[string]bool{}
 	for _, o := range allowed {

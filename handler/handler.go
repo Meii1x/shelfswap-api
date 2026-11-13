@@ -1,13 +1,3 @@
-// Package handler แปล HTTP <-> store: อ่าน/ตรวจ input, เรียก store, เลือกสถานะ HTTP ให้ถูก
-//
-// ตาราง error -> สถานะ ที่ใช้ทั้งโปรเจกต์
-//
-//	ข้อมูลที่ส่งมาผิด / ผิดกติกา       400  BAD_JSON, BAD_xxx, OWN_LISTING, BAD_CATEGORY
-//	ไม่มีตั๋ว / ตั๋วเสีย / รหัสผิด      401  NO_TOKEN, BAD_TOKEN, BAD_CREDENTIALS
-//	มีตั๋วแต่ไม่มีสิทธิ์ / ถูกแบน      403  FORBIDDEN, ACCOUNT_BANNED
-//	ไม่มี หรือ "มีแต่ไม่ใช่ของคุณ"     404  xxx_NOT_FOUND
-//	ขัดกับสถานะ/ข้อมูลที่มีอยู่        409  EMAIL_TAKEN, NOT_AVAILABLE, WRONG_STATE, IN_USE
-//	อื่น ๆ (DB ล่ม ฯลฯ)               500  INTERNAL (รายละเอียดอยู่ใน log เท่านั้น)
 package handler
 
 import (
@@ -32,8 +22,6 @@ func writeJSON(w http.ResponseWriter, status int, v any) {
 	json.NewEncoder(w).Encode(v)
 }
 
-// รูปแบบ error เดียวกันทุก endpoint: {"error": {"code": "...", "message": "..."}}
-// React อ่าน data.error.message ไปโชว์ และใช้ code ตัดสินใจได้
 func writeError(w http.ResponseWriter, status int, code, message string) {
 	writeJSON(w, status, map[string]any{
 		"error": map[string]string{"code": code, "message": message},

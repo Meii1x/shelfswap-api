@@ -55,8 +55,6 @@ type changePasswordReq struct {
 	NewPassword     string `json:"newPassword"`
 }
 
-// ChangePassword ต้องยืนยันรหัสเดิมก่อน กันคนแอบใช้เครื่องที่ล็อกอินค้างไว้
-// รหัสเดิมผิดตอบ 400 ไม่ใช่ 401 เพราะ 401 จะทำให้หน้าเว็บคิดว่าตั๋วหมดอายุแล้วเด้งออก
 func (h *Handler) ChangePassword(w http.ResponseWriter, r *http.Request) {
 	var req changePasswordReq
 	if !decode(w, r, &req) {

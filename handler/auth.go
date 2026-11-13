@@ -101,8 +101,6 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	h.issue(w, http.StatusOK, u)
 }
 
-// Logout: JWT ไม่มีที่เก็บฝั่ง server ให้ลบ หน้าเว็บทิ้งตั๋วเองก็พอ endpoint นี้มีไว้ให้ครบ flow
-// (ถ้าอยากยกเลิกตั๋วจริง ต้องทำ blacklist หรือใช้ session แทน)
 func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }

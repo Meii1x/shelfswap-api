@@ -73,16 +73,7 @@ func (s *Store) listReservations(ctx context.Context, where string, arg any) ([]
 	return out, rows.Err()
 }
 
-// Reserve จองของ 1 ชิ้น: หัวใจของคลิปคนที่ 2
-//
-// ปัญหา: สองคนกดจองพร้อมกัน ถ้า "อ่านสถานะ -> เช็ก -> เขียน" แยกกัน ทั้งคู่จะเห็น available แล้วจองซ้อนกัน
-// วิธีแก้: SELECT ... FOR UPDATE ล็อกแถวประกาศไว้ในทรานแซกชัน คนที่สองต้องรอจนคนแรก Commit
-// พอได้ล็อกก็จะเห็นสถานะใหม่ (reserved) แล้วถูกปฏิเสธ
-// (ใช้ FOR UPDATE แทน UPDATE ... WHERE status='available' คำสั่งเดียวแบบ Lab 6
-//
-//	เพราะต้องรู้ seller_id มาเช็กว่า "จองของตัวเอง" ด้วย และต้อง INSERT การจองในทรานแซกชันเดียวกัน)
-//
-// ด่านสุดท้ายคือ unique index uq_reservations_active ใน schema.sql
+
 func (s *Store) Reserve(ctx context.Context, listingID, buyerID int64, message string) (Reservation, error) {
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {
@@ -126,11 +117,7 @@ func (s *Store) Reserve(ctx context.Context, listingID, buyerID int64, message s
 	return s.getReservation(ctx, id)
 }
 
-// Decide เปลี่ยนสถานะการจอง
-//   - "accept" / "reject": ผู้ขายเท่านั้น และการจองต้องยัง pending
-//   - "cancel": ผู้ซื้อเท่านั้น และการจองต้องยัง pending
-//
-// reject/cancel คืนของกลับไป available ในทรานแซกชันเดียวกัน
+
 func (s *Store) Decide(ctx context.Context, resID, userID int64, action string) (Reservation, error) {
 	tx, err := s.Pool.Begin(ctx)
 	if err != nil {

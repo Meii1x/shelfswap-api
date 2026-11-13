@@ -22,7 +22,6 @@ func intParam(q url.Values, name string, def int) (int, bool) {
 }
 
 // SearchListings GET /api/listings?q=&category=&condition=&minPrice=&maxPrice=&sort=&page=&pageSize=
-// เส้นทางในคลิปคนที่ 1: FilterSidebar -> query string -> SearchParams -> SQL WHERE -> Grid
 func (h *Handler) SearchListings(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	p := store.SearchParams{

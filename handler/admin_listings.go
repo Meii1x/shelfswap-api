@@ -9,8 +9,6 @@ import (
 	"shelfswap/store"
 )
 
-// ไฟล์ของคนที่ 2: ภาพรวม + อนุมัติประกาศ ทุก route ถูกครอบด้วย admin(...) ใน main.go
-
 // AdminStats GET /api/admin/stats
 func (h *Handler) AdminStats(w http.ResponseWriter, r *http.Request) {
 	st, err := h.Store.Stats(r.Context())

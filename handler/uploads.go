@@ -12,28 +12,14 @@ import (
 	"time"
 )
 
-// UploadImage POST /api/uploads  (ต้อง login)
-//
-// สัญญากับฝั่ง React:
-//
-//	Request : multipart/form-data มีไฟล์ในฟิลด์ชื่อ "file" + Authorization: Bearer <token>
-//	Response: 201 {"url": "https://<project>.supabase.co/storage/v1/object/public/listing-images/..."}
-//
-// React เอา url ไปใส่ช่อง imageUrl ของประกาศ แล้วบันทึกประกาศเหมือนเดิม (endpoint ประกาศไม่ต้องแก้)
-//
-// ทำไมไม่เก็บไฟล์ไว้บน server เอง: Render แบบฟรีล้างดิสก์ทุกครั้งที่ deploy/หลับ รูปจะหาย
-// จึงส่งต่อไปเก็บที่ Supabase Storage ด้วย secret key ที่อยู่บน Render เท่านั้น (ไม่หลุดไปฝั่ง React)
-
 const maxUploadBytes = 5 << 20 // 5 MB
 
-// ตรวจชนิดไฟล์จาก "เนื้อไฟล์" ไม่เชื่อนามสกุลหรือ Content-Type ที่ browser ส่งมา
 var allowedImageTypes = map[string]string{
 	"image/jpeg": ".jpg",
 	"image/png":  ".png",
 	"image/webp": ".webp",
 }
 
-// timeout ต้องสั้นกว่า WriteTimeout ของ server (15 วิ) จะได้ตอบ error ได้ทันก่อนโดนตัด
 var storageClient = &http.Client{Timeout: 12 * time.Second}
 
 func randomName() string {
@@ -54,7 +40,6 @@ func (h *Handler) UploadImage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// จำกัดขนาดทั้งคำขอ (เผื่อหัว multipart อีก 1 MB) กันคนส่งไฟล์ยักษ์มาถ่วง server
 	r.Body = http.MaxBytesReader(w, r.Body, maxUploadBytes+1<<20)
 	file, _, err := r.FormFile("file")
 	if err != nil {
@@ -79,7 +64,6 @@ func (h *Handler) UploadImage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// ตั้งชื่อไฟล์เอง (ไม่ใช้ชื่อที่ผู้ใช้ส่งมา) แยกโฟลเดอร์ตามผู้ใช้ สุ่มชื่อกันชนกัน
 	path := fmt.Sprintf("u%d/%s%s", me(r).ID, randomName(), ext)
 
 	req, err := http.NewRequestWithContext(r.Context(), http.MethodPost,
@@ -89,7 +73,7 @@ func (h *Handler) UploadImage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	req.Header.Set("apikey", key)
-	if strings.HasPrefix(key, "eyJ") { // key แบบเก่า (service_role) เป็น JWT ต้องส่งใน Authorization ด้วย
+	if strings.HasPrefix(key, "eyJ") {
 		req.Header.Set("Authorization", "Bearer "+key)
 	}
 	req.Header.Set("Content-Type", contentType)

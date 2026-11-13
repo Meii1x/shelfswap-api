@@ -29,7 +29,6 @@ type reserveReq struct {
 }
 
 // Reserve POST /api/listings/{id}/reserve
-// เส้นทางในคลิปคนที่ 2: ปุ่มจอง -> RequireLogin (ตรวจตั๋ว+แบน) -> ทรานแซกชัน FOR UPDATE -> DB
 func (h *Handler) Reserve(w http.ResponseWriter, r *http.Request) {
 	id, ok := pathID(w, r, "id")
 	if !ok {
